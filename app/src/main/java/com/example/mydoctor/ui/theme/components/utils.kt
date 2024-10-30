@@ -1,9 +1,13 @@
 package com.example.mydoctor.ui.theme.components
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
@@ -25,19 +30,20 @@ import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.mydoctor.R
 import com.example.mydoctor.ui.theme.ActiveButtonColor
 import com.example.mydoctor.ui.theme.BackgroundColor
 import com.example.mydoctor.ui.theme.CancelButtonColor
 import com.example.mydoctor.ui.theme.TitleTextColor
-import com.example.mydoctor.utils.Constants.CANCEL_BUTTON_TEXT
-import com.example.mydoctor.utils.Constants.OK_BUTTON_TEXT
-import com.example.mydoctor.utils.Constants.TIME_PICKER_TITLE
 import java.time.LocalDate
 import java.util.Calendar
 
@@ -79,7 +85,7 @@ fun DatePickerDialog(
                     horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()
                 ) {
                     TextButton(onClick = onDismissRequest) {
-                        Text(CANCEL_BUTTON_TEXT, color = CancelButtonColor)
+                        Text(stringResource(R.string.ulils_cancel), color = CancelButtonColor)
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     TextButton(onClick = {
@@ -89,7 +95,7 @@ fun DatePickerDialog(
                             onDateSelected(date)
                         }
                     }) {
-                        Text(OK_BUTTON_TEXT, color = ActiveButtonColor)
+                        Text(stringResource(R.string.utils_ol), color = ActiveButtonColor)
                     }
                 }
             }
@@ -112,7 +118,7 @@ fun TimePickerDialogs(
 
     AlertDialog(containerColor = Color.White,
         onDismissRequest = onDismissRequest,
-        title = { Text(TIME_PICKER_TITLE, color = TitleTextColor) },
+        title = { Text("Select time", color = TitleTextColor) },
         text = {
             TimePicker(
                 state = timePickerState, colors = TimePickerDefaults.colors(
@@ -133,12 +139,85 @@ fun TimePickerDialogs(
                 val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
                 onTimeSelected(formattedTime)
             }) {
-                Text(OK_BUTTON_TEXT, color = ActiveButtonColor)
+                Text(stringResource(R.string.utils_ol), color = ActiveButtonColor)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(CANCEL_BUTTON_TEXT, color = CancelButtonColor)
+                Text(stringResource(R.string.ulils_cancel), color = CancelButtonColor)
             }
         })
+}
+
+@Composable
+fun CustomDialogPressure(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit = {},
+    systolic: String,
+    diastolic: String,
+    pulse: String,
+    note: String,
+    data: String
+) {
+    val shouldDismiss = remember {
+        mutableStateOf(true)
+    }
+    Dialog(
+        onDismissRequest = {
+            onDismissRequest.invoke()
+        },
+        content = {
+            Box(
+                modifier = modifier
+                    .padding(16.dp)
+                    .border(BorderStroke(1.dp, Color(0xffFF9F76)), shape = RoundedCornerShape(8.dp))
+                    .background(BackgroundColor, shape = RoundedCornerShape(8.dp))
+                    .clickable { shouldDismiss.value = false }
+            ) {
+                Column(modifier.padding(16.dp)) {
+                    Row {
+                        BodyXsText(
+                            text = stringResource(R.string._utilst_card_sistolic),
+                            modifier = Modifier.padding(end = 16.dp),
+                            color = CancelButtonColor
+                        )
+                        BodyXsText(
+                            text = stringResource(R.string._utilst_card_distolic),
+                            color = CancelButtonColor
+                        )
+                    }
+                    Row {
+                        BodyLText(text = systolic, modifier = Modifier.padding(end = 70.dp))
+                        BodyLText(text = diastolic)
+                    }
+                    Row {
+                        BodyXsText(
+                            text = stringResource(R.string._utilst_card_pressure_data),
+                            modifier = Modifier.padding(end = 53.dp),
+                            color = CancelButtonColor
+                        )
+                        BodyXsText(
+                            text = stringResource(R.string._utilst_card_pressure_data),
+                            color = CancelButtonColor
+                        )
+                    }
+
+                    Row {
+                        Column {
+                            BodyLText(text = pulse)
+                            BodyXsText(
+                                text = stringResource(R.string._utilst_card_pulse),
+                                color = CancelButtonColor,
+                                modifier = modifier.padding(end = 65.dp)
+                            )
+                        }
+                        Column {
+                            BodyXsText(text = data)
+                            BodyXsText(text = note, color = CancelButtonColor)
+                        }
+                    }
+                }
+            }
+        }
+    )
 }

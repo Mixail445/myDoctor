@@ -14,17 +14,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mydoctor.R
 import com.example.mydoctor.ui.theme.ActiveButtonColor
 import com.example.mydoctor.ui.theme.ButtonTextColor
 import com.example.mydoctor.ui.theme.InactiveButtonColor
 import com.example.mydoctor.ui.theme.PlaceholderTextColor
 import com.example.mydoctor.ui.theme.PressureButtonColor
-import com.example.mydoctor.utils.Constants.ADD_DATA_BUTTON_TEXT
-import com.example.mydoctor.utils.Constants.BUTTON_TEXT_DATE
 
 
 @Composable
@@ -51,7 +51,10 @@ fun BaseButton(
 
 @Preview
 @Composable
-fun ButtonScreenPressure(onClick: () -> Unit = {}, @SuppressLint("ModifierParameter") modifier: Modifier = Modifier) {
+fun ButtonScreenPressure(
+    onClick: () -> Unit = {},
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
+) {
     Button(
         modifier = modifier.height(25.dp),
         onClick = { onClick() },
@@ -62,7 +65,7 @@ fun ButtonScreenPressure(onClick: () -> Unit = {}, @SuppressLint("ModifierParame
         border = BorderStroke(1.dp, color = PressureButtonColor),
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
-        Text(text = ADD_DATA_BUTTON_TEXT, fontSize = 12.sp)
+        Text(text = stringResource(R.string.base_button_data), fontSize = 12.sp)
     }
 }
 
@@ -71,7 +74,7 @@ fun ButtonScreenPressure(onClick: () -> Unit = {}, @SuppressLint("ModifierParame
 fun ButtonAction(
     onClick: () -> Unit = {},
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
-    text: String = BUTTON_TEXT_DATE
+    text: String = stringResource(R.string.base_button_text)
 ) {
     Button(
         onClick = { onClick() },
@@ -79,8 +82,13 @@ fun ButtonAction(
         modifier = modifier,
         shape = RoundedCornerShape(14.dp),
     ) {
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart,) {
-            Text(text, color = PlaceholderTextColor, fontSize = 18.sp, fontWeight = FontWeight.Normal)
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+            Text(
+                text,
+                color = PlaceholderTextColor,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal
+            )
         }
     }
 }

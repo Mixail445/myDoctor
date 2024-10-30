@@ -11,7 +11,6 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val ActiveButtonColor = Color(0xFF0088FF)
-val DisableButtonColor = Color(0x4D0088FF)
 val BackgroundColor = Color(0xffFAFAFE)
 val CancelButtonColor = Color(0xff1C1C2480).copy(alpha = 0.5f)
 val TitleTextColor = Color(0xff1C1C2480)
@@ -32,5 +31,4 @@ val BackgroundGradientMiddle = Color(0xfffcd993)
 val BackgroundGradientEnd = Color(0xffFAFAFE)
 val BlackColor = Color.Black
 val WhiteColor = Color.White
-val PressureCardColor = Color(0x4CCEDDDE)
 val TooltipBackgroundColor = Color.Black.copy(alpha = 0.5f)

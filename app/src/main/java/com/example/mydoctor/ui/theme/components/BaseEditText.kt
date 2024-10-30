@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,12 +22,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mydoctor.ui.theme.BlackColor
 import com.example.mydoctor.ui.theme.StateDescriptionColor
-import com.example.mydoctor.ui.theme.TitleTextColor
 import com.example.mydoctor.ui.theme.Transparent
 import com.example.mydoctor.ui.theme.White
 import com.example.mydoctor.utils.Constants
@@ -35,12 +41,12 @@ import com.example.mydoctor.utils.Constants
 fun BaseEditText(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    leadingIcon: (@Composable () -> Unit)? = null,
-    trailingIcon: (@Composable () -> Unit)? = null,
     placeholderText: String = Constants.EMPTY_STRING,
     textStyle: TextStyle = TextStyle(),
+    isNumericInput: Boolean = true,
+    onNextFocus: (() -> Unit)? = null
 ) {
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(Constants.EMPTY_STRING) }
     val focusRequester = remember { FocusRequester() }
     var isFocused by remember { mutableStateOf(false) }
 
@@ -64,27 +70,48 @@ fun BaseEditText(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            leadingIcon?.invoke()
             Box(modifier = Modifier.weight(1f)) {
                 BasicTextField(
                     maxLines = 1,
                     value = text,
                     onValueChange = {
-                        text = it
-                        onValueChange(it)
+                        if (isNumericInput && it.all { char -> char.isDigit() } || !isNumericInput) {
+                            text = it
+                            onValueChange(it)
+                        }
                     },
                     textStyle = textStyle.copy(fontSize = 18.sp, color = BlackColor),
-                    modifier = Modifier.padding(0.dp)
+                    modifier = Modifier
+                        .padding(0.dp)
+                        .onKeyEvent { keyEvent ->
+                            if (keyEvent.type == KeyEventType.KeyUp && keyEvent.key == Key.Enter) {
+                                onNextFocus?.invoke()
+                                true
+                            } else {
+                                false
+                            }
+                        },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = if (isNumericInput)
+                            KeyboardType.Number
+                        else
+                            KeyboardType.Text
+                    )
                 )
                 if (text.isEmpty()) {
                     Text(
                         placeholderText,
                         style = textStyle.copy(color = StateDescriptionColor, fontSize = 18.sp),
-                        modifier = Modifier.align(Alignment.CenterStart)
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .clickable {
+                                focusRequester.requestFocus()
+                                text = Constants.EMPTY_STRING
+                            }
                     )
                 }
             }
-            trailingIcon?.invoke()
         }
     }
 }
+

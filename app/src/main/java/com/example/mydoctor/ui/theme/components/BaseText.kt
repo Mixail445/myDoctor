@@ -88,11 +88,12 @@ fun BodyXsText(text: String, color: Color = Color.Black,@SuppressLint("ModifierP
 }
 
 @Composable
-fun BodyMText(text: String,@SuppressLint("ModifierParameter")  modifier: Modifier = Modifier) {
+fun BodyMText(text: String,@SuppressLint("ModifierParameter")  modifier: Modifier = Modifier,color: Color = Color.Black) {
     CustomText(
         text = text,
         fontSize = 16f,
         fontWeight = FontWeight.Normal,
-        modifier = modifier
+        modifier = modifier,
+        color = color
     )
 }

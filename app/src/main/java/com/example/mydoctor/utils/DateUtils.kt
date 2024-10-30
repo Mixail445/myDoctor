@@ -9,7 +9,8 @@ import java.util.Locale
 
 object DateUtils {
     private const val DEFAULT = "yyyy-MM-dd"
-    private const val TIME = "HH:mm"
+    const val TIME = "HH:mm"
+    const val MONTH = "dd.MM"
     private const val TIME_MILLIS = "HH:mm"
 
     val timeFormatterMillis: DateTimeFormatter = DateTimeFormatter.ofPattern(TIME_MILLIS)

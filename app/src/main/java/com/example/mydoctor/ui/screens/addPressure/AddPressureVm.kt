@@ -2,8 +2,12 @@ package com.example.mydoctor.ui.screens.addPressure
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mydoctor.domain.Pressure
 import com.example.mydoctor.domain.PressureLocalSource
+import com.example.mydoctor.domain.mapToEntity
+import com.example.mydoctor.utils.Constants.DATE_ERROR
 import com.example.mydoctor.utils.Constants.EMPTY_STRING
+import com.example.mydoctor.utils.Constants.TIME_ERROR
 import com.example.mydoctor.utils.Constants.ZERO_INT
 import com.example.mydoctor.utils.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +28,7 @@ class AddPressureVm @Inject constructor(private val pressureLocalSource: Pressur
 
     private val _uiState = MutableStateFlow(
         AddPressureView.Model(
-            PressureUi(ZERO_INT, ZERO_INT, null, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 1),
+            Pressure(ZERO_INT, ZERO_INT, null, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 1),
             EMPTY_STRING,
             EMPTY_STRING,
             snackBarMessage = EMPTY_STRING
@@ -145,14 +149,14 @@ class AddPressureVm @Inject constructor(private val pressureLocalSource: Pressur
         val selectedDate = uiState.value.data.ifEmpty { currentDate }
         val selectedTime = uiState.value.time.ifEmpty { currentTime }
 
-        val pressureEntity = _uiState.value.pressureUi.toEntity().copy(
+        val pressureEntity = _uiState.value.pressureUi.copy(
             dateOfMeasurements = selectedDate,
             measurementTime = selectedTime
         )
 
-        pressureLocalSource.insertPressure(pressureEntity)
+        pressureLocalSource.insertPressure(pressureEntity.mapToEntity())
 
-        _uiState.update { it.copy(isActiveButton = false) }
+        _uiLabels.emit(AddPressureView.UiLabel.ShowBackScreen)
     }
 
     private fun handlerClickBack() {
@@ -167,14 +171,11 @@ class AddPressureVm @Inject constructor(private val pressureLocalSource: Pressur
         }
     }
 
-    private fun updatePressureUi(update: (PressureUi) -> PressureUi) {
+
+    private fun updatePressureUi(update: (Pressure) -> Pressure) {
         _uiState.value = _uiState.value.copy(
             pressureUi = update(_uiState.value.pressureUi)
         )
     }
 
-    companion object Messages {
-        const val DATE_ERROR = "Дата не может быть установлена меньше нынешней"
-        const val TIME_ERROR = "Время не может быть установлено меньше нынешнего"
-    }
 }

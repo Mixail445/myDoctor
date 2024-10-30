@@ -1,15 +1,18 @@
 package com.example.mydoctor.ui.screens.addPressure
 
+import com.example.mydoctor.domain.Pressure
+import com.example.mydoctor.utils.Constants
+
 interface AddPressureView {
     data class Model(
-        val pressureUi: PressureUi,
+        val pressureUi: Pressure,
         val data: String,
         val time: String,
         val isActiveButton: Boolean = false,
         val showDataPicker: Boolean = false,
         val showTimePicker: Boolean = false,
         val showSnackBar: Boolean = false,
-        val snackBarMessage: String
+        val snackBarMessage: String,
     )
 
     sealed interface Event {
@@ -31,3 +34,11 @@ interface AddPressureView {
         data object ShowBackScreen : UiLabel
     }
 }
+
+data class PressureDialogData(
+    val data: String = Constants.EMPTY_STRING,
+    val note: String = Constants.EMPTY_STRING,
+    val pulse: String = Constants.EMPTY_STRING,
+    val diastolic: String = Constants.EMPTY_STRING,
+    val systolic: String = Constants.EMPTY_STRING
+)

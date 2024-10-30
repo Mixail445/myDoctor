@@ -30,6 +30,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -55,9 +57,6 @@ import com.example.mydoctor.ui.theme.components.DatePickerDialog
 import com.example.mydoctor.ui.theme.components.TimePickerDialogs
 import com.example.mydoctor.ui.theme.components.TitleText
 import com.example.mydoctor.utils.Constants.EMPTY_STRING
-import com.example.mydoctor.utils.Constants.PLACEHOLDER_DIASTOLIC
-import com.example.mydoctor.utils.Constants.PLACEHOLDER_PULSE
-import com.example.mydoctor.utils.Constants.PLACEHOLDER_SYSTOLIC
 import kotlinx.coroutines.launch
 
 @Preview
@@ -190,20 +189,27 @@ fun ScreenAddPressure(navController: NavController? = null) {
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
+                    val focusRequester1 = remember { FocusRequester() }
+                    val focusRequester2 = remember { FocusRequester() }
+                    val focusRequester3 = remember { FocusRequester() }
                     Row(Modifier.padding(horizontal = 16.dp)) {
                         BaseEditText(
+                            onNextFocus = {focusRequester1.requestFocus()},
                             onValueChange = {
                                 viewModel.onEvent(AddPressureView.Event.OnSystolicChange(it))
                             }, modifier = Modifier
                                 .size(105.dp, 45.dp)
-                                .padding(end = 8.dp), placeholderText = PLACEHOLDER_SYSTOLIC
+                                .padding(end = 8.dp), placeholderText = stringResource(R.string.screenAddPressure_text_systolic)
                         )
                         BaseEditText(
                             onValueChange = {
                                 viewModel.onEvent(AddPressureView.Event.OnDiastolicChange(it))
                             },
-                            modifier = Modifier.size(105.dp, 45.dp),
-                            placeholderText = PLACEHOLDER_DIASTOLIC
+                            onNextFocus = {focusRequester2.requestFocus()},
+                            modifier = Modifier
+                                .size(105.dp, 45.dp)
+                                .focusRequester(focusRequester = focusRequester1),
+                            placeholderText = stringResource(R.string.screenAddPressure_text_distolic)
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         BaseEditText(
@@ -212,8 +218,9 @@ fun ScreenAddPressure(navController: NavController? = null) {
                             },
                             modifier = Modifier
                                 .padding(start = 24.dp)
-                                .size(105.dp, 45.dp),
-                            placeholderText = PLACEHOLDER_PULSE
+                                .size(105.dp, 45.dp)
+                                .focusRequester(focusRequester2),
+                            placeholderText = stringResource(R.string.screen_add_pressure_pulse)
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -253,13 +260,15 @@ fun ScreenAddPressure(navController: NavController? = null) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     BaseEditText(
+                        isNumericInput = false,
                         onValueChange = { value ->
                             viewModel.onEvent(AddPressureView.Event.OnNoteChange(value))
                         },
                         modifier = Modifier
                             .height(45.dp)
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 16.dp)
+                            .focusRequester(focusRequester3),
                         placeholderText = stringResource(R.string.screenAddPressure_et_note)
                     )
                 }

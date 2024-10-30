@@ -1,30 +1,26 @@
 package com.example.mydoctor.domain
 
-
-import com.example.mydoctor.ui.screens.addPressure.PressureUi
-import com.example.mydoctor.utils.DateUtils
-import com.example.mydoctor.utils.DateUtils.dateFormatter
-import java.time.LocalDate
-import java.time.LocalTime
+import com.example.mydoctor.data.local.PressureEntity
+import com.example.mydoctor.utils.Constants
 
 data class Pressure(
     val systolicPressure: Int,
     val diastolicPressure: Int,
     val pulse: Int? = null,
-    val dateOfMeasurements: LocalDate,
-    val measurementTime: LocalTime,
+    val dateOfMeasurements: String,
+    val measurementTime: String,
     val note: String? = null,
     val timestamp: Long
 )
 
-fun Pressure.toUi(): PressureUi {
-    return PressureUi(
-        systolicPressure,
-        diastolicPressure,
-        pulse,
-        dateOfMeasurements.format(dateFormatter),
-        measurementTime.format(DateUtils.timeFormatterMillis),
-        note,
-        timestamp
-    )
-}
+fun Pressure.mapToEntity() = PressureEntity(
+    id = Constants.ZERO_LONG,
+    systolicPressure,
+    diastolicPressure,
+    pulse,
+    dateOfMeasurements,
+    measurementTime,
+    note,
+    timestamp
+)
+

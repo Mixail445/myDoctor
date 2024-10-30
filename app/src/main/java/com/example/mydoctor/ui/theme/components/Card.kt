@@ -1,6 +1,8 @@
 package com.example.mydoctor.ui.theme.components
 
+
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -57,28 +60,13 @@ import com.example.mydoctor.ui.theme.LightGray
 import com.example.mydoctor.ui.theme.StateDescriptionColor
 import com.example.mydoctor.ui.theme.SystolicColor
 import com.example.mydoctor.ui.theme.Transparent
-import com.example.mydoctor.utils.Constants
-import com.example.mydoctor.utils.Constants.DAY_BUTTON_TEXT
-import com.example.mydoctor.utils.Constants.DIASTOLIC_TEXT
 import com.example.mydoctor.utils.Constants.EMPTY_STRING
-import com.example.mydoctor.utils.Constants.MONTH_BUTTON_TEXT
-import com.example.mydoctor.utils.Constants.NOTES_TITLE
-import com.example.mydoctor.utils.Constants.NO_DATA_TEXT
-import com.example.mydoctor.utils.Constants.PRESSURE_RATE
-import com.example.mydoctor.utils.Constants.PRESSURE_TITLE_TEXT
-import com.example.mydoctor.utils.Constants.PULSE
-import com.example.mydoctor.utils.Constants.PULSE_RATE
-import com.example.mydoctor.utils.Constants.STATE_DESCRIPTION
-import com.example.mydoctor.utils.Constants.SYSTOLIC_TEXT
-import com.example.mydoctor.utils.Constants.TODAY_TEXT
-import com.example.mydoctor.utils.Constants.WEEK_BUTTON_TEXT
-import com.patrykandpatrick.vico.core.common.data.MutableExtraStore
 import kotlinx.coroutines.launch
+
 
 @Composable
 fun CardWithPeriod(onClick: (Period) -> Unit = {}) {
     var activeButton by remember { mutableStateOf(Period.DAY) }
-
     Card(
         shape = RoundedCornerShape(26.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -105,7 +93,7 @@ fun CardWithPeriod(onClick: (Period) -> Unit = {}) {
                 ),
             ) {
                 Text(
-                    text = DAY_BUTTON_TEXT,
+                    text = stringResource(R.string.card_text_day),
                     color = Color.Black,
                     fontWeight = if (activeButton == Period.DAY) FontWeight.Bold else FontWeight.Normal
                 )
@@ -123,7 +111,7 @@ fun CardWithPeriod(onClick: (Period) -> Unit = {}) {
                 ),
             ) {
                 Text(
-                    text = WEEK_BUTTON_TEXT,
+                    text = stringResource(R.string.card_week),
                     color = Color.Black,
                     fontWeight = if (activeButton == Period.WEEK) FontWeight.Bold else FontWeight.Normal
                 )
@@ -141,7 +129,7 @@ fun CardWithPeriod(onClick: (Period) -> Unit = {}) {
                 ),
             ) {
                 Text(
-                    text = MONTH_BUTTON_TEXT,
+                    text = stringResource(R.string.card_text_month),
                     color = Color.Black,
                     fontWeight = if (activeButton == Period.MONTH) FontWeight.Bold else FontWeight.Normal
                 )
@@ -174,7 +162,7 @@ fun RichTooltipWithCustomCaretSample(modifier: Modifier = Modifier, state: Toolt
             }, action = {
                 Text(
                     style = TextStyle.Default.copy(fontWeight = FontWeight(400)),
-                    text = Constants.TOOLTIP_ACTION_TEXT,
+                    text = stringResource(R.string.card_text_long_text),
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp,
                     lineHeight = 20.sp,
@@ -184,7 +172,8 @@ fun RichTooltipWithCustomCaretSample(modifier: Modifier = Modifier, state: Toolt
             ) {
                 Box(Modifier.fillMaxWidth()) {
                     TitleText(
-                        text = Constants.TOOLTIP_TITLE, modifier = Modifier.align(Alignment.Center)
+                        text = stringResource(R.string.card_text_add_data),
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
             }
@@ -222,15 +211,16 @@ fun customTooltipPositionProvider(): PopupPositionProvider {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardWithPressureGraph(
-    period: Period,
     tooltipState: TooltipState,
-    systolicData: List<Pair<String, Float>>,
-    diastolicData: List<Pair<String, Float>>,
     modifier: Modifier = Modifier,
-    mediumPressure: String = NO_DATA_TEXT,
+    mediumPressure: String = stringResource(R.string.card_text_no_data),
     mediumPulse: String = EMPTY_STRING,
-    mediumPressureDate: String = TODAY_TEXT,
-    isShowFullText: Boolean = false
+    mediumPressureDate: String = stringResource(R.string.card_text_now),
+    isShowFullText: Boolean = false,
+    pressurePoint: List<PressurePoint>,
+    onClickPoint: (String, String, String?, String?, String?) -> Unit,
+    onDismissPoint: () -> Unit,
+    context: Context
 ) {
     Card(
         shape = RoundedCornerShape(24.dp),
@@ -241,26 +231,35 @@ fun CardWithPressureGraph(
             Row(Modifier.padding(start = 16.dp)) {
                 if (isShowFullText) {
                     BodyXsText(
-                        text = PRESSURE_TITLE_TEXT,
+                        text = stringResource(R.string.card_text_pressure),
                         color = CancelButtonColor.copy(alpha = 0.5f)
                     )
                     HeadingText(
                         text = mediumPressure,
                         modifier = Modifier.padding(start = 8.dp, end = 4.dp, top = 2.dp),
                     )
-                    BodyXsText(text = PRESSURE_RATE, color = CancelButtonColor.copy(alpha = 0.5f))
+                    BodyXsText(text = "мм рт.ст", color = CancelButtonColor.copy(alpha = 0.5f))
                 } else {
-                    BodyLText(text = NO_DATA_TEXT, modifier = Modifier.padding(start = 16.dp))
+                    BodyLText(
+                        text = stringResource(R.string.card_text_not_data),
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
                 }
             }
             Row(Modifier.padding(start = 16.dp)) {
                 if (isShowFullText) {
-                    BodyXsText(text = PULSE, color = CancelButtonColor)
+                    BodyXsText(
+                        text = stringResource(R.string.screenAddPressure_text_pulse),
+                        color = CancelButtonColor
+                    )
                     HeadingText(
                         text = mediumPulse,
                         modifier = Modifier.padding(start = 28.dp, end = 4.dp, top = 2.dp),
                     )
-                    BodyXsText(text = PULSE_RATE, color = CancelButtonColor)
+                    BodyXsText(
+                        text = stringResource(R.string.card_text_parametr),
+                        color = CancelButtonColor
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -283,24 +282,24 @@ fun CardWithPressureGraph(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 DrawCircle(SystolicColor, 4.dp, padding = PaddingValues(end = 16.dp))
-                BodyXsText(text = SYSTOLIC_TEXT)
+                BodyXsText(text = stringResource(R.string.card_systolic))
 
                 DrawCircle(
                     DiastolicColor, 4.dp, padding = PaddingValues(start = 16.dp, end = 16.dp)
                 )
-                BodyXsText(text = DIASTOLIC_TEXT)
+                BodyXsText(text = stringResource(R.string.card_distolic))
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            DiagramPressure(
+            LineChartComponent(
+                context = context,
                 modifier = Modifier
                     .height(283.dp)
                     .padding(horizontal = 16.dp),
-                systolicData,
-                diastolicData,
-                period = period,
-                extraStore = remember { MutableExtraStore() }
+                pressurePoints = pressurePoint,
+                onClickPoint = onClickPoint,
+                onDismissPoint = onDismissPoint
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -334,7 +333,8 @@ fun CardNotes(
                             tint = null
                         )
                         BodyMText(
-                            text = NOTES_TITLE,
+                            color = Color.Black,
+                            text = stringResource(R.string.card_text_note),
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(start = 16.dp)
@@ -368,7 +368,7 @@ fun CardNotes(
                             tint = null
                         )
                         BodyMText(
-                            text = NOTES_TITLE,
+                            text = stringResource(R.string.card_text_note),
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(start = 16.dp)
@@ -381,13 +381,16 @@ fun CardNotes(
                     }
                     HorizontalDivider()
                     Spacer(modifier = Modifier.height(8.dp))
-                    BodySText(text = STATE_DESCRIPTION, color = StateDescriptionColor)
+                    BodySText(
+                        text = stringResource(R.string.card_text_text_medium),
+                        color = StateDescriptionColor
+                    )
                 }
             }
         }
 
         is CardState.Empty -> {
-            Card {
+            Card(colors = CardDefaults.cardColors(containerColor = Color.White)) {
                 Row(
                     Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -398,7 +401,7 @@ fun CardNotes(
                         tint = null
                     )
                     Text(
-                        text = NOTES_TITLE, modifier = Modifier
+                        text = stringResource(R.string.card_text_note), modifier = Modifier
                             .weight(1f)
                             .padding(start = 16.dp)
                     )
