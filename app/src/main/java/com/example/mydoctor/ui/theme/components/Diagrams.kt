@@ -1,5 +1,3 @@
-@file:Suppress("NAME_SHADOWING")
-
 package com.example.mydoctor.ui.theme.components
 
 
@@ -66,10 +64,10 @@ fun LineChartComponent(
         LineData(systolicDataSet, diastolicDataSet)
     }
 
-    AndroidView(modifier = modifier.fillMaxWidth(), factory = { context ->
-        LineChart(context).apply {
+    AndroidView(modifier = modifier.fillMaxWidth(), factory = { factory ->
+        LineChart(factory).apply {
             data = lineDataCombined
-
+            description.isEnabled = false
             axisLeft.isEnabled = false
             xAxis.setDrawGridLines(false)
             axisRight.enableGridDashedLine(10f, 5f, 0f)
@@ -77,7 +75,6 @@ fun LineChartComponent(
             axisRight.axisMaximum = 200f
             xAxis.enableGridDashedLine(10f, 10f, 0f)
             xAxis.position = XAxis.XAxisPosition.BOTTOM
-
             systolicDataSet.setDrawValues(false)
             diastolicDataSet.setDrawValues(false)
 

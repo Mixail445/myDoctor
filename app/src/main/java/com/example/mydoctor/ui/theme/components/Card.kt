@@ -1,10 +1,8 @@
 package com.example.mydoctor.ui.theme.components
 
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.MutatePriority
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -232,13 +230,16 @@ fun CardWithPressureGraph(
                 if (isShowFullText) {
                     BodyXsText(
                         text = stringResource(R.string.card_text_pressure),
-                        color = CancelButtonColor.copy(alpha = 0.5f)
+                        color = CancelButtonColor.copy(alpha = 0.5f),
+                        modifier = Modifier
                     )
                     HeadingText(
                         text = mediumPressure,
                         modifier = Modifier.padding(start = 8.dp, end = 4.dp, top = 2.dp),
                     )
-                    BodyXsText(text = "мм рт.ст", color = CancelButtonColor.copy(alpha = 0.5f))
+                    BodyXsText(
+                        text = "мм рт.ст", color = CancelButtonColor.copy(alpha = 0.5f), Modifier
+                    )
                 } else {
                     BodyLText(
                         text = stringResource(R.string.card_text_not_data),
@@ -250,7 +251,8 @@ fun CardWithPressureGraph(
                 if (isShowFullText) {
                     BodyXsText(
                         text = stringResource(R.string.screenAddPressure_text_pulse),
-                        color = CancelButtonColor
+                        color = CancelButtonColor,
+                        Modifier
                     )
                     HeadingText(
                         text = mediumPulse,
@@ -258,7 +260,8 @@ fun CardWithPressureGraph(
                     )
                     BodyXsText(
                         text = stringResource(R.string.card_text_parametr),
-                        color = CancelButtonColor
+                        color = CancelButtonColor,
+                        Modifier
                     )
                 }
             }
@@ -282,12 +285,12 @@ fun CardWithPressureGraph(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 DrawCircle(SystolicColor, 4.dp, padding = PaddingValues(end = 16.dp))
-                BodyXsText(text = stringResource(R.string.card_systolic))
+                BodyXsText(text = stringResource(R.string.card_systolic), modifier = Modifier)
 
                 DrawCircle(
                     DiastolicColor, 4.dp, padding = PaddingValues(start = 16.dp, end = 16.dp)
                 )
-                BodyXsText(text = stringResource(R.string.card_distolic))
+                BodyXsText(text = stringResource(R.string.card_distolic), modifier = Modifier)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -318,9 +321,7 @@ fun CardWithPressureGraph(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardNotes(
-    note: String = EMPTY_STRING,
-    cardState: CardState = CardState.DoubleText,
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier.background(Color.White)
+    note: String = EMPTY_STRING, cardState: CardState = CardState.DoubleText, modifier: Modifier
 ) {
     when (cardState) {
         is CardState.SingleText -> {
@@ -351,9 +352,9 @@ fun CardNotes(
                         BodyXsText(
                             text = cardState.data, color = DarkGray, Modifier.padding(end = 8.dp)
                         )
-                        BodyXsText(text = cardState.time, color = DarkGray)
+                        BodyXsText(text = cardState.time, color = DarkGray, modifier = Modifier)
                     }
-                    BodySText(text = note)
+                    BodySText(text = note, modifier = Modifier)
                 }
             }
         }
@@ -383,7 +384,8 @@ fun CardNotes(
                     Spacer(modifier = Modifier.height(8.dp))
                     BodySText(
                         text = stringResource(R.string.card_text_text_medium),
-                        color = StateDescriptionColor
+                        color = StateDescriptionColor,
+                        modifier = Modifier
                     )
                 }
             }
@@ -401,7 +403,8 @@ fun CardNotes(
                         tint = null
                     )
                     Text(
-                        text = stringResource(R.string.card_text_note), modifier = Modifier
+                        text = stringResource(R.string.card_text_note),
+                        modifier = Modifier
                             .weight(1f)
                             .padding(start = 16.dp)
                     )

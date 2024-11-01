@@ -76,6 +76,7 @@ fun ScreenAddPressure(navController: NavController? = null) {
             }
         }
     }
+
     if (uiState.showTimePicker) {
         TimePickerDialogs(
             onDismissRequest = { viewModel.onEvent(AddPressureView.Event.OnDismissDialog) },
@@ -100,7 +101,7 @@ fun ScreenAddPressure(navController: NavController? = null) {
         }
     }
 
-    Scaffold(containerColor = BackgroundGradientEnd,topBar = {
+    Scaffold(containerColor = BackgroundGradientEnd, topBar = {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -125,6 +126,7 @@ fun ScreenAddPressure(navController: NavController? = null) {
                     )
                 }
             }
+            // Title text in top bar
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -149,7 +151,7 @@ fun ScreenAddPressure(navController: NavController? = null) {
 
             val centerX = containerSize.width / 2f * 2
             val centerY = containerSize.height / 2f
-
+            // Main content layout
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -166,7 +168,7 @@ fun ScreenAddPressure(navController: NavController? = null) {
                     ),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-
+                // Input fields for blood pressure and pulse
                 Column(modifier = Modifier.padding(top = 24.dp)) {
                     Row(Modifier.padding(horizontal = 16.dp)) {
                         BodyMText(text = stringResource(R.string.screenAddPressure_text_blud_pressure))
@@ -180,12 +182,14 @@ fun ScreenAddPressure(navController: NavController? = null) {
                     Row(Modifier.padding(horizontal = 16.dp)) {
                         BodyXsText(
                             text = stringResource(R.string.screenAddPressure_text_sist),
-                            color = Color.LightGray
+                            color = Color.LightGray,
+                            modifier = Modifier
                         )
                         Spacer(modifier = Modifier.width(20.dp))
                         BodyXsText(
                             text = stringResource(R.string.screenAddPressure_text_diest),
-                            color = Color.LightGray
+                            color = Color.LightGray,
+                            modifier = Modifier
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -194,18 +198,20 @@ fun ScreenAddPressure(navController: NavController? = null) {
                     val focusRequester3 = remember { FocusRequester() }
                     Row(Modifier.padding(horizontal = 16.dp)) {
                         BaseEditText(
-                            onNextFocus = {focusRequester1.requestFocus()},
+                            onNextFocus = { focusRequester1.requestFocus() },
                             onValueChange = {
                                 viewModel.onEvent(AddPressureView.Event.OnSystolicChange(it))
-                            }, modifier = Modifier
+                            },
+                            modifier = Modifier
                                 .size(105.dp, 45.dp)
-                                .padding(end = 8.dp), placeholderText = stringResource(R.string.screenAddPressure_text_systolic)
+                                .padding(end = 8.dp),
+                            placeholderText = stringResource(R.string.screenAddPressure_text_systolic)
                         )
                         BaseEditText(
                             onValueChange = {
                                 viewModel.onEvent(AddPressureView.Event.OnDiastolicChange(it))
                             },
-                            onNextFocus = {focusRequester2.requestFocus()},
+                            onNextFocus = { focusRequester2.requestFocus() },
                             modifier = Modifier
                                 .size(105.dp, 45.dp)
                                 .focusRequester(focusRequester = focusRequester1),
@@ -252,12 +258,13 @@ fun ScreenAddPressure(navController: NavController? = null) {
                         )
                     }
                     Spacer(modifier = Modifier.height(24.dp))
-
+                    // Label for notes section
                     BodyMText(
                         text = stringResource(R.string.screenAddPressure_text_note),
                         modifier = Modifier.padding(start = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
+                    // Input field for notes related to the pressure measurement
 
                     BaseEditText(
                         isNumericInput = false,
@@ -272,6 +279,7 @@ fun ScreenAddPressure(navController: NavController? = null) {
                         placeholderText = stringResource(R.string.screenAddPressure_et_note)
                     )
                 }
+                // Save button to submit the pressure data
                 BaseButton(
                     onClick = {
                         coroutineScope.launch {

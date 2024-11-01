@@ -1,6 +1,5 @@
 package com.example.mydoctor.ui.theme.components
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -46,6 +45,7 @@ import com.example.mydoctor.ui.theme.CancelButtonColor
 import com.example.mydoctor.ui.theme.TitleTextColor
 import java.time.LocalDate
 import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun DrawCircle(color: Color, size: Dp, padding: PaddingValues) {
@@ -103,7 +103,7 @@ fun DatePickerDialog(
     }
 }
 
-@SuppressLint("DefaultLocale")
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialogs(
@@ -136,7 +136,8 @@ fun TimePickerDialogs(
             TextButton(onClick = {
                 val selectedHour = timePickerState.hour
                 val selectedMinute = timePickerState.minute
-                val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+                val formattedTime =
+                    String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute)
                 onTimeSelected(formattedTime)
             }) {
                 Text(stringResource(R.string.utils_ol), color = ActiveButtonColor)
@@ -183,12 +184,13 @@ fun CustomDialogPressure(
                         )
                         BodyXsText(
                             text = stringResource(R.string._utilst_card_distolic),
-                            color = CancelButtonColor
+                            color = CancelButtonColor,
+                            modifier = Modifier
                         )
                     }
                     Row {
                         BodyLText(text = systolic, modifier = Modifier.padding(end = 70.dp))
-                        BodyLText(text = diastolic)
+                        BodyLText(text = diastolic, modifier = Modifier)
                     }
                     Row {
                         BodyXsText(
@@ -198,13 +200,14 @@ fun CustomDialogPressure(
                         )
                         BodyXsText(
                             text = stringResource(R.string._utilst_card_pressure_data),
-                            color = CancelButtonColor
+                            color = CancelButtonColor,
+                            modifier = Modifier
                         )
                     }
 
                     Row {
                         Column {
-                            BodyLText(text = pulse)
+                            BodyLText(text = pulse, modifier = Modifier)
                             BodyXsText(
                                 text = stringResource(R.string._utilst_card_pulse),
                                 color = CancelButtonColor,
@@ -212,8 +215,8 @@ fun CustomDialogPressure(
                             )
                         }
                         Column {
-                            BodyXsText(text = data)
-                            BodyXsText(text = note, color = CancelButtonColor)
+                            BodyXsText(text = data, modifier = Modifier)
+                            BodyXsText(text = note, color = CancelButtonColor, modifier = Modifier)
                         }
                     }
                 }

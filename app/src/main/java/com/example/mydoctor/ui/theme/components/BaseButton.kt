@@ -1,6 +1,5 @@
 package com.example.mydoctor.ui.theme.components
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mydoctor.R
@@ -32,7 +30,7 @@ fun BaseButton(
     onClick: () -> Unit = {},
     isActive: Boolean = false,
     text: String,
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
+    modifier: Modifier
 ) {
     Button(
         modifier = modifier,
@@ -49,11 +47,10 @@ fun BaseButton(
     }
 }
 
-@Preview
 @Composable
 fun ButtonScreenPressure(
     onClick: () -> Unit = {},
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
+    modifier: Modifier
 ) {
     Button(
         modifier = modifier.height(25.dp),
@@ -69,11 +66,10 @@ fun ButtonScreenPressure(
     }
 }
 
-@Preview
 @Composable
 fun ButtonAction(
     onClick: () -> Unit = {},
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    modifier: Modifier,
     text: String = stringResource(R.string.base_button_text)
 ) {
     Button(

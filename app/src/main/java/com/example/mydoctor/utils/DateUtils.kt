@@ -20,9 +20,7 @@ object DateUtils {
     val currentDate: LocalDate = LocalDate.now()
     val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-
     fun getCurrentDate(): String = LocalDate.now().format("dd.MM.yyyy")
-
 
     private fun LocalDate.format(pattern: String): String {
         return this.format(DateTimeFormatter.ofPattern(pattern))
@@ -56,6 +54,11 @@ object DateUtils {
     fun formatDate(dateString: String): String {
         val date = LocalDate.parse(dateString)
         val formatter = DateTimeFormatter.ofPattern("d MMMM", Locale("ru"))
+        return date.format(formatter)
+    }
+
+    fun formatMonthYear(date: LocalDate): String {
+        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy 'г.'", Locale("ru"))
         return date.format(formatter)
     }
 }

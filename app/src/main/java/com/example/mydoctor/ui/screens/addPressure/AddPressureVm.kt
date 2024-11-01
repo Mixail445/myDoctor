@@ -2,14 +2,14 @@ package com.example.mydoctor.ui.screens.addPressure
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mydoctor.R
 import com.example.mydoctor.domain.Pressure
 import com.example.mydoctor.domain.PressureLocalSource
 import com.example.mydoctor.domain.mapToEntity
-import com.example.mydoctor.utils.Constants.DATE_ERROR
 import com.example.mydoctor.utils.Constants.EMPTY_STRING
-import com.example.mydoctor.utils.Constants.TIME_ERROR
 import com.example.mydoctor.utils.Constants.ZERO_INT
 import com.example.mydoctor.utils.DateUtils
+import com.example.mydoctor.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +23,10 @@ import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
-class AddPressureVm @Inject constructor(private val pressureLocalSource: PressureLocalSource) :
+class AddPressureVm @Inject constructor(
+    private val pressureLocalSource: PressureLocalSource,
+    private val resource: Resource
+) :
     ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -65,6 +68,14 @@ class AddPressureVm @Inject constructor(private val pressureLocalSource: Pressur
         }
     }
 
+    /**
+     * <h1>Handle Save Event</h1>
+     * Initiates the process of saving pressure data asynchronously.
+     *
+     * @author Mike
+     * @version 1.0
+     * @since 2024-11-01
+     */
     private fun handleSaveEvent() {
         viewModelScope.launch {
             handlerClickSave()
@@ -115,28 +126,54 @@ class AddPressureVm @Inject constructor(private val pressureLocalSource: Pressur
         _uiState.update { it.copy(showDataPicker = true) }
     }
 
+    /**
+     * <h1>Update Button State</h1>
+     * Validates systolic and diastolic pressures to enable or disable save button.
+     *
+     * @author Mike
+     * @version 1.0
+     * @since 2024-11-01
+     */
     private fun updateButtonState() {
         val systolicValid = _uiState.value.pressureUi.systolicPressure > ZERO_INT
         val diastolicValid = _uiState.value.pressureUi.diastolicPressure > ZERO_INT
         _uiState.update { it.copy(isActiveButton = systolicValid && diastolicValid) }
     }
 
+    /**
+     * <h1>Handle Time Change Event</h1>
+     * Validates and updates selected time in the UI state if it's not before current time.
+     *
+     *@param selectedTime The selected time as a string.
+     *@author Mike
+     *@version 1.0
+     *@since 2024-11-01
+     */
     private fun handlerClickTimeChanger(selectedTime: String) {
         val selectedLocalTime = LocalTime.parse(selectedTime, DateUtils.timeFormatter)
         val currentT = LocalTime.parse(DateUtils.getCurrentTimeString(), DateUtils.timeFormatter)
 
         if (selectedLocalTime.isBefore(currentT)) {
-            showError(TIME_ERROR)
+            showError(resource.getString(R.string.vm_helper_time))
         } else {
             _uiState.update { it.copy(time = selectedTime, showTimePicker = false) }
         }
     }
 
+    /**
+     * <h1>Handle Date Change Event</h1>
+     * Validates and updates selected date in the UI state if it's not before current date.
+     *
+     *@param selectData The selected date as a string.
+     *@author Mike
+     *@version 1.0
+     *@since 2024-11-01
+     */
     private fun handlerClickDataChanger(selectData: String) {
         val selectedLocalDate = LocalDate.parse(selectData, DateUtils.dateFormatter)
 
         if (selectedLocalDate.isBefore(DateUtils.currentDate)) {
-            showError(DATE_ERROR)
+            showError(resource.getString(R.string.vm_helper_date))
         } else {
             _uiState.update { it.copy(data = selectData, showDataPicker = false) }
         }

@@ -43,4 +43,8 @@
     <string name="card_text_text_medium">Опиши свое состояние</string>
     <string name="base_button_text">27.06.2024</string>
     <string name="base_button_data">Добавить данные</string>
+    <string name="vm_helper_time">"Время не может быть установлено меньше нынешнего"</string>
+    <string name="vm_helper_date">"Дата не может быть установлена меньше нынешней"</string>
+
+
 </resources>

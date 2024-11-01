@@ -14,7 +14,7 @@ fun CustomText(
     fontSize: Float,
     fontWeight: FontWeight = FontWeight.Normal,
     color: Color = Color.Black,
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
+    modifier: Modifier
 ) {
     Text(
         text = text,
@@ -27,47 +27,28 @@ fun CustomText(
 
 
 @Composable
-fun TitleText(text: String, modifier: Modifier = Modifier) {
+fun TitleText(text: String, modifier: Modifier) {
     CustomText(
-        text = text,
-        fontSize = 18f,
-        fontWeight = FontWeight.SemiBold,
-        modifier = modifier
+        text = text, fontSize = 18f, fontWeight = FontWeight.SemiBold, modifier = modifier
     )
 }
 
 @Composable
-fun HeadingText(text: String, @SuppressLint("ModifierParameter") modifier: Modifier = Modifier) {
+fun HeadingText(text: String, modifier: Modifier) {
     CustomText(
-        text = text,
-        fontSize = 18f,
-        fontWeight = FontWeight.SemiBold,
-        modifier = modifier
+        text = text, fontSize = 18f, fontWeight = FontWeight.SemiBold, modifier = modifier
     )
 }
 
 @Composable
-fun SubtitleText(text: String, @SuppressLint("ModifierParameter") modifier: Modifier = Modifier) {
+fun BodySText(text: String, color: Color = Color.Black, modifier: Modifier) {
     CustomText(
-        text = text,
-        fontSize = 16f,
-        fontWeight = FontWeight.SemiBold,
-        modifier = modifier
+        text = text, fontSize = 14f, color = color, modifier = modifier
     )
 }
 
 @Composable
-fun BodySText(text: String, color: Color = Color.Black, @SuppressLint("ModifierParameter") modifier: Modifier = Modifier) {
-    CustomText(
-        text = text,
-        fontSize = 14f,
-        color = color,
-        modifier = modifier
-    )
-}
-
-@Composable
-fun BodyLText(text: String, color: Color = Color.Black, @SuppressLint("ModifierParameter") modifier: Modifier = Modifier) {
+fun BodyLText(text: String, color: Color = Color.Black, modifier: Modifier) {
     CustomText(
         text = text,
         fontSize = 18f,
@@ -78,17 +59,18 @@ fun BodyLText(text: String, color: Color = Color.Black, @SuppressLint("ModifierP
 }
 
 @Composable
-fun BodyXsText(text: String, color: Color = Color.Black,@SuppressLint("ModifierParameter")  modifier: Modifier = Modifier) {
+fun BodyXsText(text: String, color: Color = Color.Black, modifier: Modifier) {
     CustomText(
-        text = text,
-        fontSize = 12f,
-        color = color,
-        modifier = modifier
+        text = text, fontSize = 12f, color = color, modifier = modifier
     )
 }
 
 @Composable
-fun BodyMText(text: String,@SuppressLint("ModifierParameter")  modifier: Modifier = Modifier,color: Color = Color.Black) {
+fun BodyMText(
+    text: String,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    color: Color = Color.Black
+) {
     CustomText(
         text = text,
         fontSize = 16f,

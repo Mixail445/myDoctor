@@ -48,7 +48,17 @@ class PressureVm @Inject constructor(private val pressureLocalSource: PressureLo
             }
         }
     }
-
+    /**
+     * <h1>Update User Interface State</h1>
+     * Updates the UI based on the fetched pressure data, grouping it by the current period
+     * and calculating average values.
+     *
+     * @param pressures A list of pressure measurements.
+     *
+     * @author Mike
+     * @version 1.0
+     * @since 2024-11-01
+     */
     private fun updateUiState(pressures: List<PressureEntity>) {
         val hasData = pressures.isNotEmpty()
         val points = pressures.map { pressure ->
@@ -90,8 +100,8 @@ class PressureVm @Inject constructor(private val pressureLocalSource: PressureLo
             currentState.copy(
                 mediumPressure = points.map { it.systolic }.average().toString(),
                 showFullText = hasData,
-                cardState = CardState.Empty
-
+                cardState = CardState.Empty,
+                data = DateUtils.formatMonthYear(LocalDate.now())
             )
         }
     }

@@ -1,6 +1,5 @@
 package com.example.mydoctor.ui.screens.pressure
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,7 +49,6 @@ import com.example.mydoctor.ui.theme.components.CustomDialogPressure
 import com.example.mydoctor.utils.Constants.EMPTY_STRING
 import com.github.mikephil.charting.utils.Utils
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenPressure(navController: NavController? = null) {
@@ -90,6 +88,7 @@ fun ScreenPressure(navController: NavController? = null) {
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Header with doctor icon and title
             item {
                 Spacer(modifier = Modifier.height(40.dp))
                 Row {
@@ -106,6 +105,7 @@ fun ScreenPressure(navController: NavController? = null) {
                     )
                 }
             }
+            // Display current pressure data and add pressure button
             item {
                 Row(
                     modifier = Modifier
@@ -119,7 +119,7 @@ fun ScreenPressure(navController: NavController? = null) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(stringResource(R.string.screenPressure_pressure), color = BlackColor)
-                        Text(stringResource(R.string.screenPressure_data), color = BlackColor)
+                        Text(uiState.data, color = BlackColor)
                     }
                     Card(
                         onClick = { navController?.navigate(Screen.ScreenAddPressure.screenName) },
@@ -138,14 +138,25 @@ fun ScreenPressure(navController: NavController? = null) {
                     }
                 }
             }
-
-
+            // Card for selecting period (day/week/month)
             item {
                 Spacer(modifier = Modifier.height(32.dp))
                 CardWithPeriod { period ->
                     viewModel.onEvent(PressureView.Event.OnClickCard(period))
                 }
             }
+            /**
+             * <h1>Display Pressure Graph</h1>
+             * This function creates a UI element to display a pressure graph
+             * using the CardWithPressureGraph component, setting up parameters
+             * like average pressure and pulse. It also handles user interactions
+             * for dismissing dialogs and showing details on pressure points.
+             *
+             * @author  Mike
+             * @version 1.0
+             * @since   2024-11-01
+             */
+            // Display the pressure graph with interaction handling
             item {
                 Spacer(modifier = Modifier.height(16.dp))
                 CardWithPressureGraph(modifier = Modifier.fillMaxWidth(),
@@ -172,13 +183,14 @@ fun ScreenPressure(navController: NavController? = null) {
                     }
                 )
             }
+            // Display notes related to pressure readings
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                CardNotes(cardState = uiState.cardState, note = uiState.note)
+                CardNotes(cardState = uiState.cardState, note = uiState.note, modifier = Modifier)
                 Spacer(modifier = Modifier.height(64.dp))
             }
         }
-
+        // Display tooltip background if persistent state is active
         if (tooltipState.isPersistent) {
             Box(
                 modifier = Modifier
