@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -88,7 +88,7 @@ fun ScreenPressure(navController: NavController? = null) {
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Header with doctor icon and title
+            // Заголовок с иконкой врача и названием экрана
             item {
                 Spacer(modifier = Modifier.height(40.dp))
                 Row {
@@ -105,7 +105,7 @@ fun ScreenPressure(navController: NavController? = null) {
                     )
                 }
             }
-            // Display current pressure data and add pressure button
+            // Отображение текущих данных о давлении и кнопка добавления давления
             item {
                 Row(
                     modifier = Modifier
@@ -125,41 +125,40 @@ fun ScreenPressure(navController: NavController? = null) {
                         onClick = { navController?.navigate(Screen.ScreenAddPressure.screenName) },
                         shape = RoundedCornerShape(10.dp),
                         colors = CardDefaults.cardColors(containerColor = WhiteColor),
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.wrapContentSize()
                     ) {
-                        Box(Modifier.size(32.dp)) {
+                        Box(Modifier.wrapContentSize()) {
                             Icon(
                                 tint = BlackColor,
                                 painter = painterResource(id = R.drawable.icon_add),
                                 contentDescription = EMPTY_STRING,
-                                modifier = Modifier.align(Alignment.Center)
+                                modifier = Modifier.align(Alignment.Center).padding(5.dp)
                             )
                         }
                     }
                 }
             }
-            // Card for selecting period (day/week/month)
+            // Карта для выбора периода (день/неделя/месяц)
             item {
                 Spacer(modifier = Modifier.height(32.dp))
-                CardWithPeriod { period ->
+                CardWithPeriod(modifier = Modifier, onClick =  { period ->
                     viewModel.onEvent(PressureView.Event.OnClickCard(period))
-                }
+                })
             }
             /**
-             * <h1>Display Pressure Graph</h1>
-             * This function creates a UI element to display a pressure graph
-             * using the CardWithPressureGraph component, setting up parameters
-             * like average pressure and pulse. It also handles user interactions
-             * for dismissing dialogs and showing details on pressure points.
+             * <h1>Отображение графика давления</h1>
+             * Эта функция создает элемент пользовательского интерфейса для отображения графика давления
+             * с использованием компонента CardWithPressureGraph, настраивая параметры
+             * такие как среднее давление и пульс. Она также обрабатывает взаимодействия пользователя
+             * для закрытия диалогов и отображения деталей по точкам давления.
              *
              * @author  Mike
              * @version 1.0
              * @since   2024-11-01
              */
-            // Display the pressure graph with interaction handling
             item {
                 Spacer(modifier = Modifier.height(16.dp))
-                CardWithPressureGraph(modifier = Modifier.fillMaxWidth(),
+                CardWithPressureGraph(modifier = Modifier,
                     mediumPulse = uiState.mediumPulse,
                     mediumPressure = uiState.mediumPressure,
                     mediumPressureDate = uiState.dataPressure,
@@ -183,14 +182,14 @@ fun ScreenPressure(navController: NavController? = null) {
                     }
                 )
             }
-            // Display notes related to pressure readings
+            // Отображение заметок, связанных с показаниями давления
             item {
                 Spacer(modifier = Modifier.height(16.dp))
                 CardNotes(cardState = uiState.cardState, note = uiState.note, modifier = Modifier)
                 Spacer(modifier = Modifier.height(64.dp))
             }
         }
-        // Display tooltip background if persistent state is active
+        // Отображение фона подсказки, если активировано постоянное состояние
         if (tooltipState.isPersistent) {
             Box(
                 modifier = Modifier

@@ -36,16 +36,18 @@ data class PressurePoint(
 @Composable
 fun LineChartComponent(
     context: Context,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     pressurePoints: List<PressurePoint>,
     onClickPoint: (String, String, String?, String?, String?) -> Unit,
     onDismissPoint: () -> Unit
 ) {
+    // Определение цветов для линий и точек на графике
     val systolicColorLine = ContextCompat.getColor(context, R.color.sistolic)
     val diastolicColorLine = ContextCompat.getColor(context, R.color.diestolic)
     val pointDiastolicColor = ContextCompat.getColor(context, R.color.point_diastolic)
     val pointSystolicColor = ContextCompat.getColor(context, R.color.point_sistolic)
 
+    // Создание набора данных для систолического давления
     val systolicDataSet = pressurePoints.mapIndexed { index, point ->
         Entry(index.toFloat(), point.systolic)
     }.createDataSetWithColor(
@@ -53,6 +55,7 @@ fun LineChartComponent(
         stringResource(R.string.diagram_data_systolic)
     )
 
+    // Создание набора данных для диастолического давления
     val diastolicDataSet = pressurePoints.mapIndexed { index, point ->
         Entry(index.toFloat(), point.diastolic)
     }.createDataSetWithColor(
@@ -70,14 +73,19 @@ fun LineChartComponent(
             description.isEnabled = false
             axisLeft.isEnabled = false
             xAxis.setDrawGridLines(false)
+
+            // Настройка правой оси Y
             axisRight.enableGridDashedLine(10f, 5f, 0f)
             axisRight.granularity = 50f
             axisRight.axisMaximum = 200f
+
             xAxis.enableGridDashedLine(10f, 10f, 0f)
             xAxis.position = XAxis.XAxisPosition.BOTTOM
+
             systolicDataSet.setDrawValues(false)
             diastolicDataSet.setDrawValues(false)
 
+            // Обработка выбора значения на графике
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     val index = e?.x?.toInt()
@@ -100,6 +108,7 @@ fun LineChartComponent(
         }
     }, update = { chart ->
         chart.data = lineDataCombined
+
         if (pressurePoints.isNotEmpty()) {
             val systolicValues = pressurePoints.map { it.systolic }
             val diastolicValues = pressurePoints.map { it.diastolic }
@@ -109,30 +118,16 @@ fun LineChartComponent(
             chart.axisLeft.axisMaximum =
                 maxOf(systolicValues.maxOrNull() ?: 0f, diastolicValues.maxOrNull() ?: 0f)
         }
-        chart.xAxis.valueFormatter = DateValueFormatter(pressurePoints.map { it.dateTime })
-        chart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-            override fun onValueSelected(e: Entry?, h: Highlight?) {
-                val index = e?.x?.toInt()
-                if (index != null && index in pressurePoints.indices) {
-                    val pressurePoint = pressurePoints[index]
-                    onClickPoint.invoke(
-                        pressurePoint.systolic.toString(),
-                        pressurePoint.diastolic.toString(),
-                        pressurePoint.pulse.toString(),
-                        pressurePoint.dateTime.toString(),
-                        pressurePoint.note
-                    )
-                }
-            }
 
-            override fun onNothingSelected() {
-                onDismissPoint.invoke()
-            }
-        })
+        chart.xAxis.valueFormatter = DateValueFormatter(pressurePoints.map { it.dateTime })
+
         chart.invalidate()
     })
 }
 
+/**
+ * Форматировщик значений по оси X для отображения дат.
+ */
 class DateValueFormatter(private val dates: List<LocalDateTime>) : ValueFormatter() {
     private val formatterDay = DateTimeFormatter.ofPattern(DateUtils.TIME)
     private val formatterWeekMonth = DateTimeFormatter.ofPattern(MONTH)
@@ -146,12 +141,14 @@ class DateValueFormatter(private val dates: List<LocalDateTime>) : ValueFormatte
                     dates[value.toInt()].format(formatterWeekMonth)
                 }
             }
-
             else -> Constants.EMPTY_STRING
         }
     }
 }
 
+/**
+ * Создает набор данных с заданным цветом.
+ */
 fun List<Entry>.createDataSetWithColor(
     lineColor: Int,
     pointColor: Int,

@@ -11,8 +11,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -57,37 +58,36 @@ import com.example.mydoctor.ui.theme.DiastolicColor
 import com.example.mydoctor.ui.theme.LightGray
 import com.example.mydoctor.ui.theme.StateDescriptionColor
 import com.example.mydoctor.ui.theme.SystolicColor
-import com.example.mydoctor.ui.theme.Transparent
 import com.example.mydoctor.utils.Constants.EMPTY_STRING
 import kotlinx.coroutines.launch
 
-
+/**
+ * Компонент для отображения карточки с кнопками выбора периода (день, неделя, месяц).
+ *
+ */
 @Composable
-fun CardWithPeriod(onClick: (Period) -> Unit = {}) {
+fun CardWithPeriod(onClick: (Period) -> Unit = {}, modifier: Modifier) {
     var activeButton by remember { mutableStateOf(Period.DAY) }
     Card(
         shape = RoundedCornerShape(26.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        modifier = Modifier
-            .height(42.dp)
+        modifier = modifier
+            .wrapContentSize()
             .fillMaxWidth(),
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
             Button(
-                contentPadding = PaddingValues(),
-                modifier = Modifier.width(99.dp),
+                modifier = Modifier.weight(1f),
                 onClick = {
                     activeButton = Period.DAY
                     onClick(Period.DAY)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (activeButton == Period.DAY) ActiveButtonColorCard else Transparent
+                    containerColor = if (activeButton == Period.DAY) ActiveButtonColorCard else Color.Transparent
                 ),
             ) {
                 Text(
@@ -98,14 +98,13 @@ fun CardWithPeriod(onClick: (Period) -> Unit = {}) {
             }
 
             Button(
-                contentPadding = PaddingValues(),
-                modifier = Modifier.width(99.dp),
+                modifier = Modifier.weight(1f),
                 onClick = {
                     activeButton = Period.WEEK
                     onClick(Period.WEEK)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (activeButton == Period.WEEK) ActiveButtonColorCard else Transparent
+                    containerColor = if (activeButton == Period.WEEK) ActiveButtonColorCard else Color.Transparent
                 ),
             ) {
                 Text(
@@ -116,14 +115,13 @@ fun CardWithPeriod(onClick: (Period) -> Unit = {}) {
             }
 
             Button(
-                contentPadding = PaddingValues(),
-                modifier = Modifier.width(99.dp),
+                modifier = Modifier.weight(1f),
                 onClick = {
                     activeButton = Period.MONTH
                     onClick(Period.MONTH)
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (activeButton == Period.MONTH) ActiveButtonColorCard else Transparent
+                    containerColor = if (activeButton == Period.MONTH) ActiveButtonColorCard else Color.Transparent
                 ),
             ) {
                 Text(
@@ -135,10 +133,15 @@ fun CardWithPeriod(onClick: (Period) -> Unit = {}) {
         }
     }
 }
-
+/**
+ * Компонент для отображения диалога с выбором времени и кастомным указателем.
+ *
+ * @param modifier Модификатор для настройки внешнего вида.
+ * @param state Состояние тултипа.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RichTooltipWithCustomCaretSample(modifier: Modifier = Modifier, state: TooltipState) {
+fun RichTooltipWithCustomCaretSample(modifier: Modifier, state: TooltipState) {
     val scope = rememberCoroutineScope()
 
     TooltipBox(
@@ -149,7 +152,7 @@ fun RichTooltipWithCustomCaretSample(modifier: Modifier = Modifier, state: Toolt
                 titleContentColor = Color.Black,
                 actionContentColor = Color.Black
             ), title = {
-                Box(Modifier.fillMaxWidth()) {
+                Box(modifier.fillMaxWidth()) {
                     Icon(
                         painter = painterResource(id = R.drawable.icon_camera),
                         modifier = Modifier.align(Alignment.Center),
@@ -164,11 +167,11 @@ fun RichTooltipWithCustomCaretSample(modifier: Modifier = Modifier, state: Toolt
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp,
                     lineHeight = 20.sp,
-                    modifier = Modifier.fillMaxWidth(0.9f)
+                    modifier = modifier.fillMaxWidth(0.9f)
                 )
             }, caretSize = DpSize(32.dp, 16.dp), shadowElevation = 0.dp, tonalElevation = 10.dp
             ) {
-                Box(Modifier.fillMaxWidth()) {
+                Box(modifier.fillMaxWidth()) {
                     TitleText(
                         text = stringResource(R.string.card_text_add_data),
                         modifier = Modifier.align(Alignment.Center)
@@ -178,7 +181,7 @@ fun RichTooltipWithCustomCaretSample(modifier: Modifier = Modifier, state: Toolt
         }, state = state
     ) {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(end = 18.dp),
             horizontalArrangement = Arrangement.End
@@ -205,12 +208,25 @@ fun customTooltipPositionProvider(): PopupPositionProvider {
         }
     }
 }
-
+/**
+ * Компонент для отображения карточки с графиком давления.
+ *
+ * @param tooltipState Состояние тултипа для отображения информации о точках.
+ * @param modifier Модификатор для настройки внешнего вида карточки.
+ * @param mediumPressure Среднее систолическое давление.
+ * @param mediumPulse Средний пульс.
+ * @param mediumPressureDate Дата среднего давления.
+ * @param isShowFullText Указывает, следует ли отображать полные данные.
+ * @param pressurePoint Список точек давления для графика.
+ * @param onClickPoint Функция обратного вызова для обработки кликов по точкам на графике.
+ * @param onDismissPoint Функция обратного вызова для закрытия информации о точке.
+ * @param context Контекст приложения.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardWithPressureGraph(
     tooltipState: TooltipState,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     mediumPressure: String = stringResource(R.string.card_text_no_data),
     mediumPulse: String = EMPTY_STRING,
     mediumPressureDate: String = stringResource(R.string.card_text_now),
@@ -224,7 +240,7 @@ fun CardWithPressureGraph(
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(modifier = Modifier.padding()) {
+        Column(modifier = modifier.padding()) {
             Spacer(modifier = Modifier.height(24.dp))
             Row(Modifier.padding(start = 16.dp)) {
                 if (isShowFullText) {
@@ -238,7 +254,7 @@ fun CardWithPressureGraph(
                         modifier = Modifier.padding(start = 8.dp, end = 4.dp, top = 2.dp),
                     )
                     BodyXsText(
-                        text = "мм рт.ст", color = CancelButtonColor.copy(alpha = 0.5f), Modifier
+                        text = stringResource(R.string.card_data_pressure), color = CancelButtonColor.copy(alpha = 0.5f), Modifier
                     )
                 } else {
                     BodyLText(
@@ -298,7 +314,7 @@ fun CardWithPressureGraph(
             LineChartComponent(
                 context = context,
                 modifier = Modifier
-                    .height(283.dp)
+                    .heightIn(min = 280.dp)
                     .padding(horizontal = 16.dp),
                 pressurePoints = pressurePoint,
                 onClickPoint = onClickPoint,
@@ -318,6 +334,13 @@ fun CardWithPressureGraph(
     }
 }
 
+/**
+ * Компонент для отображения заметок.
+ *
+ * @param note Заметка для отображения.
+ * @param cardState Состояние карточки.
+ * @param modifier Модификатор для настройки внешнего вида карточки.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardNotes(

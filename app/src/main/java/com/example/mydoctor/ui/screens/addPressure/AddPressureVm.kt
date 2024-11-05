@@ -26,8 +26,7 @@ import javax.inject.Inject
 class AddPressureVm @Inject constructor(
     private val pressureLocalSource: PressureLocalSource,
     private val resource: Resource
-) :
-    ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         AddPressureView.Model(
@@ -51,6 +50,11 @@ class AddPressureVm @Inject constructor(
         }
     }
 
+    /**
+     * Обрабатывает события, поступающие из пользовательского интерфейса.
+     *
+     * @param event Событие, которое необходимо обработать.
+     */
     fun onEvent(event: AddPressureView.Event) {
         when (event) {
             is AddPressureView.Event.OnClickBack -> handlerClickBack()
@@ -70,11 +74,7 @@ class AddPressureVm @Inject constructor(
 
     /**
      * <h1>Handle Save Event</h1>
-     * Initiates the process of saving pressure data asynchronously.
-     *
-     * @author Mike
-     * @version 1.0
-     * @since 2024-11-01
+     * Инициирует процесс сохранения данных о давлении асинхронно.
      */
     private fun handleSaveEvent() {
         viewModelScope.launch {
@@ -82,32 +82,58 @@ class AddPressureVm @Inject constructor(
         }
     }
 
+    /**
+     * Обрабатывает изменение значения систолического давления.
+     *
+     * @param value Новое значение систолического давления.
+     */
     private fun handleSystolicChange(value: String) {
         val newSystolic = value.toIntOrNull() ?: ZERO_INT
         updatePressureUi { it.copy(systolicPressure = newSystolic) }
         updateButtonState()
     }
 
+    /**
+     * Обрабатывает изменение значения диастолического давления.
+     *
+     * @param value Новое значение диастолического давления.
+     */
     private fun handleDiastolicChange(value: String) {
         val newDiastolic = value.toIntOrNull() ?: ZERO_INT
         updatePressureUi { it.copy(diastolicPressure = newDiastolic) }
         updateButtonState()
     }
 
+    /**
+     * Обрабатывает изменение значения пульса.
+     *
+     * @param value Новое значение пульса.
+     */
     private fun handlePulseChange(value: String) {
         updatePressureUi { it.copy(pulse = value.toIntOrNull() ?: ZERO_INT) }
     }
 
+    /**
+     * Обрабатывает изменение заметки.
+     *
+     * @param value Новая заметка.
+     */
     private fun handleNoteChange(value: String) {
         updatePressureUi { it.copy(note = value) }
     }
 
+    /**
+     * Показывает сообщение об ошибке в виде Snackbar.
+     */
     private fun showErrorSnackBar() {
         viewModelScope.launch {
             _uiState.update { it.copy(showSnackBar = true) }
         }
     }
 
+    /**
+     * Закрывает диалоговое окно и сбрасывает состояния выбора даты и времени.
+     */
     private fun dismissDialog() {
         _uiState.update {
             it.copy(
@@ -118,21 +144,23 @@ class AddPressureVm @Inject constructor(
         }
     }
 
+    /**
+     * Показывает диалог выбора времени.
+     */
     private fun showTimePicker() {
         _uiState.update { it.copy(showTimePicker = true) }
     }
 
+    /**
+     * Показывает диалог выбора даты.
+     */
     private fun showDatePicker() {
         _uiState.update { it.copy(showDataPicker = true) }
     }
 
     /**
      * <h1>Update Button State</h1>
-     * Validates systolic and diastolic pressures to enable or disable save button.
-     *
-     * @author Mike
-     * @version 1.0
-     * @since 2024-11-01
+     * Проверяет корректность систолического и диастолического давления для активации или деактивации кнопки сохранения.
      */
     private fun updateButtonState() {
         val systolicValid = _uiState.value.pressureUi.systolicPressure > ZERO_INT
@@ -142,12 +170,9 @@ class AddPressureVm @Inject constructor(
 
     /**
      * <h1>Handle Time Change Event</h1>
-     * Validates and updates selected time in the UI state if it's not before current time.
+     * Проверяет и обновляет выбранное время
      *
-     *@param selectedTime The selected time as a string.
-     *@author Mike
-     *@version 1.0
-     *@since 2024-11-01
+     * @param selectedTime Выбранное время в виде строки.
      */
     private fun handlerClickTimeChanger(selectedTime: String) {
         val selectedLocalTime = LocalTime.parse(selectedTime, DateUtils.timeFormatter)
@@ -162,12 +187,9 @@ class AddPressureVm @Inject constructor(
 
     /**
      * <h1>Handle Date Change Event</h1>
-     * Validates and updates selected date in the UI state if it's not before current date.
+     * Проверяет и обновляет выбранную дату в состоянии UI, если она не раньше текущей даты.
      *
-     *@param selectData The selected date as a string.
-     *@author Mike
-     *@version 1.0
-     *@since 2024-11-01
+     * @param selectData Выбранная дата в виде строки.
      */
     private fun handlerClickDataChanger(selectData: String) {
         val selectedLocalDate = LocalDate.parse(selectData, DateUtils.dateFormatter)
@@ -179,6 +201,9 @@ class AddPressureVm @Inject constructor(
         }
     }
 
+    /**
+     * Сохраняет данные о давлении в локальном источнике данных и обновляет состояние UI.
+     */
     private suspend fun handlerClickSave() {
         val currentDate = DateUtils.getCurrentDateString()
         val currentTime = DateUtils.getCurrentTimeString()
@@ -196,10 +221,16 @@ class AddPressureVm @Inject constructor(
         _uiLabels.emit(AddPressureView.UiLabel.ShowBackScreen)
     }
 
-    private fun handlerClickBack() {
+    /**
+     * Обрабатывает нажатие кнопки "Назад".
+     */
+    private fun handlerClickBack() {}
 
-    }
-
+    /**
+     * Показывает сообщение об ошибке с переданным текстом.
+     *
+     * @param message Сообщение об ошибке.
+     */
     private fun showError(message: String) {
         viewModelScope.launch {
             _uiState.update {
@@ -209,10 +240,14 @@ class AddPressureVm @Inject constructor(
     }
 
 
+    /**
+     * Обновляет состояние пользовательского интерфейса для давления на основе переданного обновления.
+     *
+     * @param update Функция для обновления состояния давления.
+     */
     private fun updatePressureUi(update: (Pressure) -> Pressure) {
         _uiState.value = _uiState.value.copy(
             pressureUi = update(_uiState.value.pressureUi)
         )
     }
-
 }

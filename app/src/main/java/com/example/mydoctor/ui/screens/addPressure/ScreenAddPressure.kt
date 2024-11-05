@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -67,6 +68,8 @@ fun ScreenAddPressure(navController: NavController? = null) {
     val uiState by viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Слушаем события для навигации по экрану
     LaunchedEffect(viewModel.uiLabels) {
         viewModel.uiLabels.collect { label ->
             when (label) {
@@ -77,6 +80,7 @@ fun ScreenAddPressure(navController: NavController? = null) {
         }
     }
 
+    // Диалог выбора времени
     if (uiState.showTimePicker) {
         TimePickerDialogs(
             onDismissRequest = { viewModel.onEvent(AddPressureView.Event.OnDismissDialog) },
@@ -86,6 +90,7 @@ fun ScreenAddPressure(navController: NavController? = null) {
         )
     }
 
+    // Диалог выбора даты
     if (uiState.showDataPicker) {
         DatePickerDialog(
             onDismissRequest = { viewModel.onEvent(AddPressureView.Event.OnDismissDialog) },
@@ -94,6 +99,8 @@ fun ScreenAddPressure(navController: NavController? = null) {
             }
         )
     }
+
+    // Отображение Snackbar с сообщением об ошибке
     if (uiState.showSnackBar) {
         LaunchedEffect(uiState.snackBarMessage) {
             snackbarHostState.showSnackbar(uiState.snackBarMessage)
@@ -101,6 +108,7 @@ fun ScreenAddPressure(navController: NavController? = null) {
         }
     }
 
+    // Основной Scaffold для экрана
     Scaffold(containerColor = BackgroundGradientEnd, topBar = {
         Row(
             modifier = Modifier
@@ -109,24 +117,25 @@ fun ScreenAddPressure(navController: NavController? = null) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
+            // Кнопка "Назад"
             Card(
                 onClick = { navController?.popBackStack() },
                 shape = RoundedCornerShape(10.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 modifier = Modifier
                     .padding(start = 16.dp)
-                    .size(32.dp)
+                    .wrapContentSize()
             ) {
                 Box(Modifier.size(32.dp)) {
                     Icon(
                         tint = BlackColor,
                         painter = painterResource(id = R.drawable.icon_back),
                         contentDescription = EMPTY_STRING,
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center).padding(5.dp)
                     )
                 }
             }
-            // Title text in top bar
+            // Заголовок в верхней части экрана
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -148,10 +157,10 @@ fun ScreenAddPressure(navController: NavController? = null) {
                 }
         ) {
 
-
             val centerX = containerSize.width / 2f * 2
             val centerY = containerSize.height / 2f
-            // Main content layout
+
+            // Основной контентный макет
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -168,7 +177,7 @@ fun ScreenAddPressure(navController: NavController? = null) {
                     ),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                // Input fields for blood pressure and pulse
+                // Поля ввода для давления и пульса
                 Column(modifier = Modifier.padding(top = 24.dp)) {
                     Row(Modifier.padding(horizontal = 16.dp)) {
                         BodyMText(text = stringResource(R.string.screenAddPressure_text_blud_pressure))
@@ -193,6 +202,8 @@ fun ScreenAddPressure(navController: NavController? = null) {
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
+
+                    // Определение фокусов для полей ввода
                     val focusRequester1 = remember { FocusRequester() }
                     val focusRequester2 = remember { FocusRequester() }
                     val focusRequester3 = remember { FocusRequester() }
@@ -203,8 +214,8 @@ fun ScreenAddPressure(navController: NavController? = null) {
                                 viewModel.onEvent(AddPressureView.Event.OnSystolicChange(it))
                             },
                             modifier = Modifier
-                                .size(105.dp, 45.dp)
-                                .padding(end = 8.dp),
+                                .padding(10.dp)
+                                .weight(1f),
                             placeholderText = stringResource(R.string.screenAddPressure_text_systolic)
                         )
                         BaseEditText(
@@ -213,24 +224,26 @@ fun ScreenAddPressure(navController: NavController? = null) {
                             },
                             onNextFocus = { focusRequester2.requestFocus() },
                             modifier = Modifier
-                                .size(105.dp, 45.dp)
-                                .focusRequester(focusRequester = focusRequester1),
+                                .padding(10.dp)
+                                .weight(1f)
+                                .focusRequester(focusRequester1),
                             placeholderText = stringResource(R.string.screenAddPressure_text_distolic)
                         )
-                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.width(24.dp))
                         BaseEditText(
                             onValueChange = {
                                 viewModel.onEvent(AddPressureView.Event.OnPulseChange(it))
                             },
                             modifier = Modifier
-                                .padding(start = 24.dp)
-                                .size(105.dp, 45.dp)
+                                .padding(10.dp)
+                                .weight(1f)
                                 .focusRequester(focusRequester2),
                             placeholderText = stringResource(R.string.screen_add_pressure_pulse)
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(Modifier.padding(horizontal = 16.dp)) {
+                        // Заголовки для полей выбора даты и времени
                         BodyMText(text = stringResource(R.string.screenAddPressure_text_data_changer))
                         Spacer(modifier = Modifier.weight(1f))
                         BodyMText(
@@ -240,46 +253,50 @@ fun ScreenAddPressure(navController: NavController? = null) {
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(Modifier.padding(horizontal = 16.dp)) {
-                        uiState.data
+                        // Отображение текущей даты и кнопка для её изменения
                         ButtonAction(
                             text = uiState.data,
                             onClick = {
                                 viewModel.onEvent(AddPressureView.Event.OnClickDateChangerButton)
                             },
-                            modifier = Modifier.size(160.dp, 45.dp)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 24.dp)
                         )
-                        Spacer(modifier = Modifier.weight(1f))
+
+                        // Кнопка для изменения времени
                         ButtonAction(
                             onClick = {
                                 viewModel.onEvent(AddPressureView.Event.OnClickTimeChangerButton)
                             },
-                            modifier = Modifier.size(160.dp, 45.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp),
                             text = uiState.time
                         )
                     }
                     Spacer(modifier = Modifier.height(24.dp))
-                    // Label for notes section
+
+                    // Заголовок для секции заметок
                     BodyMText(
                         text = stringResource(R.string.screenAddPressure_text_note),
                         modifier = Modifier.padding(start = 16.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    // Input field for notes related to the pressure measurement
 
+                    // Поле ввода для заметок, связанных с измерением давления
                     BaseEditText(
                         isNumericInput = false,
                         onValueChange = { value ->
                             viewModel.onEvent(AddPressureView.Event.OnNoteChange(value))
                         },
                         modifier = Modifier
-                            .height(45.dp)
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
                             .focusRequester(focusRequester3),
                         placeholderText = stringResource(R.string.screenAddPressure_et_note)
                     )
                 }
-                // Save button to submit the pressure data
+                // Кнопка сохранения для отправки данных о давлении
                 BaseButton(
                     onClick = {
                         coroutineScope.launch {
@@ -296,7 +313,4 @@ fun ScreenAddPressure(navController: NavController? = null) {
             }
         }
     }
-
 }
-
-

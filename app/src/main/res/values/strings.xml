@@ -45,6 +45,7 @@
     <string name="base_button_data">Добавить данные</string>
     <string name="vm_helper_time">"Время не может быть установлено меньше нынешнего"</string>
     <string name="vm_helper_date">"Дата не может быть установлена меньше нынешней"</string>
+    <string name="card_data_pressure">мм рт.ст</string>
 
 
 </resources>

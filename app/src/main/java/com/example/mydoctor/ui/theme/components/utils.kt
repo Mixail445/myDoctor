@@ -46,7 +46,13 @@ import com.example.mydoctor.ui.theme.TitleTextColor
 import java.time.LocalDate
 import java.util.Calendar
 import java.util.Locale
-
+/**
+ * Компонент для рисования круга на Canvas.
+ *
+ * @param color Цвет круга.
+ * @param size Размер круга.
+ * @param padding Отступы вокруг круга.
+ */
 @Composable
 fun DrawCircle(color: Color, size: Dp, padding: PaddingValues) {
     Canvas(
@@ -59,6 +65,12 @@ fun DrawCircle(color: Color, size: Dp, padding: PaddingValues) {
     }
 }
 
+/**
+ * Диалог выбора даты.
+ *
+ * @param onDismissRequest Функция, вызываемая при закрытии диалога.
+ * @param onDateSelected Функция, вызываемая при выборе даты.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
@@ -103,7 +115,12 @@ fun DatePickerDialog(
     }
 }
 
-
+/**
+ * Диалог выбора времени.
+ *
+ * @param onDismissRequest Функция, вызываемая при закрытии диалога.
+ * @param onTimeSelected Функция, вызываемая при выборе времени.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialogs(
@@ -149,7 +166,17 @@ fun TimePickerDialogs(
             }
         })
 }
-
+/**
+ * Пользовательский диалог для отображения данных о давлении.
+ *
+ * @param modifier Модификатор для настройки внешнего вида диалога.
+ * @param onDismissRequest Функция, вызываемая при закрытии диалога.
+ * @param systolic Систолическое давление.
+ * @param diastolic Диастолическое давление.
+ * @param pulse Пульс.
+ * @param note Заметка о измерении давления.
+ * @param data Дата измерения давления.
+ */
 @Composable
 fun CustomDialogPressure(
     modifier: Modifier = Modifier,

@@ -5,9 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -37,6 +37,16 @@ import com.example.mydoctor.ui.theme.Transparent
 import com.example.mydoctor.ui.theme.White
 import com.example.mydoctor.utils.Constants
 
+/**
+ * Компонент для создания базового текстового поля ввода.
+ *
+ * @param onValueChange Функция обратного вызова, вызываемая при изменении текста.
+ * @param modifier Модификатор для настройки внешнего вида текстового поля.
+ * @param placeholderText Текст-заполнитель, отображаемый, когда поле ввода пустое.
+ * @param textStyle Стиль текста для отображения в поле ввода.
+ * @param isNumericInput Указывает, является ли ввод числовым (по умолчанию true).
+ * @param onNextFocus Функция обратного вызова для обработки перехода к следующему полю фокуса.
+ */
 @Composable
 fun BaseEditText(
     onValueChange: (String) -> Unit,
@@ -60,14 +70,13 @@ fun BaseEditText(
             .background(White, shape = RoundedCornerShape(14.dp))
             .focusRequester(focusRequester)
             .clickable { focusRequester.requestFocus() }
-            .padding(horizontal = 16.dp)
-            .height(56.dp)
+            .wrapContentSize()
             .onFocusChanged { focusState ->
                 isFocused = focusState.isFocused
             }
     ) {
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(modifier = Modifier.weight(1f)) {

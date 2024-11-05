@@ -10,6 +10,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,7 +28,14 @@ import com.example.mydoctor.ui.theme.InactiveButtonColor
 import com.example.mydoctor.ui.theme.PlaceholderTextColor
 import com.example.mydoctor.ui.theme.PressureButtonColor
 
-
+/**
+ * Базовый компонент кнопки.
+ *
+ * @param onClick Функция обратного вызова, вызываемая при нажатии кнопки.
+ * @param isActive Указывает, активна ли кнопка.
+ * @param text Текст, отображаемый на кнопке.
+ * @param modifier Модификатор для настройки внешнего вида кнопки.
+ */
 @Composable
 fun BaseButton(
     onClick: () -> Unit = {},
@@ -47,6 +58,12 @@ fun BaseButton(
     }
 }
 
+/**
+ * Кнопка для экрана давления.
+ *
+ * @param onClick Функция обратного вызова, вызываемая при нажатии кнопки.
+ * @param modifier Модификатор для настройки внешнего вида кнопки.
+ */
 @Composable
 fun ButtonScreenPressure(
     onClick: () -> Unit = {},
@@ -66,22 +83,34 @@ fun ButtonScreenPressure(
     }
 }
 
+/**
+ * Компонент для создания действия кнопки с текстом.
+ *
+ * @param onClick Функция обратного вызова, вызываемая при нажатии кнопки.
+ * @param modifier Модификатор для настройки внешнего вида кнопки.
+ * @param text Текст, отображаемый на кнопке.
+ */
 @Composable
 fun ButtonAction(
     onClick: () -> Unit = {},
     modifier: Modifier,
     text: String = stringResource(R.string.base_button_text)
 ) {
+    var isValueSet by remember { mutableStateOf(false) }
+    val textColor = if (isValueSet && text.isNotEmpty()) Color.Black else PlaceholderTextColor
     Button(
-        onClick = { onClick() },
+        onClick = {
+            onClick()
+            isValueSet = true
+        },
         colors = ButtonDefaults.buttonColors(Color.White),
         modifier = modifier,
         shape = RoundedCornerShape(14.dp),
     ) {
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+        Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
             Text(
                 text,
-                color = PlaceholderTextColor,
+                color = textColor,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Normal
             )

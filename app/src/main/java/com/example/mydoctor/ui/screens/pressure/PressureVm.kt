@@ -41,6 +41,9 @@ class PressureVm @Inject constructor(private val pressureLocalSource: PressureLo
         getData()
     }
 
+    /**
+     * Получает данные о давлениях из локального источника и обновляет состояние UI.
+     */
     private fun getData() {
         viewModelScope.launch {
             pressureLocalSource.getAllPressures().collect { pressures ->
@@ -48,16 +51,13 @@ class PressureVm @Inject constructor(private val pressureLocalSource: PressureLo
             }
         }
     }
+
     /**
-     * <h1>Update User Interface State</h1>
-     * Updates the UI based on the fetched pressure data, grouping it by the current period
-     * and calculating average values.
+     * <h1>Обновление состояния пользовательского интерфейса</h1>
+     * Обновляет UI на основе полученных данных о давлении, группируя их по текущему периоду
+     * и вычисляя средние значения.
      *
-     * @param pressures A list of pressure measurements.
-     *
-     * @author Mike
-     * @version 1.0
-     * @since 2024-11-01
+     * @param pressures Список измерений давления.
      */
     private fun updateUiState(pressures: List<PressureEntity>) {
         val hasData = pressures.isNotEmpty()
@@ -106,6 +106,11 @@ class PressureVm @Inject constructor(private val pressureLocalSource: PressureLo
         }
     }
 
+    /**
+     * Обрабатывает события, поступающие из пользовательского интерфейса.
+     *
+     * @param event Событие, которое необходимо обработать.
+     */
     fun onEvent(event: PressureView.Event) {
         when (event) {
             is PressureView.Event.OnClickCard -> handlePeriodChange(event.period)
@@ -119,12 +124,24 @@ class PressureVm @Inject constructor(private val pressureLocalSource: PressureLo
         }
     }
 
+    /**
+     * Закрывает диалоговое окно, обновляя состояние UI.
+     */
     fun closeDialog() {
         _uiState.update { currentState ->
             currentState.copy(isDialogVisible = false)
         }
     }
 
+    /**
+     * Обрабатывает нажатие для отображения диалогового окна с информацией о показаниях давления.
+     *
+     * @param data Дата измерения.
+     * @param note Заметка о измерении.
+     * @param pulse Пульс.
+     * @param diastolic Диастолическое давление.
+     * @param systolic Систолическое давление.
+     */
     private fun handlerClickShowDialog(
         data: String,
         note: String,
@@ -146,6 +163,11 @@ class PressureVm @Inject constructor(private val pressureLocalSource: PressureLo
         )
     }
 
+    /**
+     * Обрабатывает изменение периода для отображения данных о давлении.
+     *
+     * @param period Новый период (день, неделя или месяц).
+     */
     private fun handlePeriodChange(period: Period) {
         _currentPeriod.value = period
         when (period) {
@@ -158,6 +180,11 @@ class PressureVm @Inject constructor(private val pressureLocalSource: PressureLo
         }
     }
 
+    /**
+     * Получает данные о давлении за указанный день и обновляет состояние UI.
+     *
+     * @param date Дата для получения данных о давлении.
+     */
     private fun getPressuresByDay(date: String) {
         val formattedStartDate = DateUtils.formatDate(date)
 
@@ -172,6 +199,12 @@ class PressureVm @Inject constructor(private val pressureLocalSource: PressureLo
         }
     }
 
+    /**
+     * Получает данные о давлении за указанный период недели и обновляет состояние UI.
+     *
+     * @param startDate Начальная дата недели.
+     * @param endDate Конечная дата недели.
+     */
     private fun getPressuresByWeek(startDate: String, endDate: String) {
         val formattedStartDate = DateUtils.formatDate(startDate)
         val formattedEndDate = DateUtils.formatDate(endDate)
@@ -187,6 +220,12 @@ class PressureVm @Inject constructor(private val pressureLocalSource: PressureLo
         }
     }
 
+    /**
+     * Получает данные о давлении за указанный период месяца и обновляет состояние UI.
+     *
+     * @param startDate Начальная дата месяца.
+     * @param endDate Конечная дата месяца.
+     */
     private fun getPressuresByMonth(startDate: String, endDate: String) {
         val formattedStartDate = DateUtils.formatDate(startDate)
         val formattedEndDate = DateUtils.formatDate(endDate)
